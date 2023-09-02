@@ -5,36 +5,37 @@ import Section from '../../components/Section'
 import Gallery from '../../components/Gallery'
 
 import spiderman from '../../assets/images/banner-homem-aranha.png'
+import { useEffect, useState } from 'react'
+import { Game } from '../Home'
 
 const Product = () => {
-  useParams()
+  const { id } = useParams()
+
+  const [game, setGame] = useState<Game>()
+
+  useEffect(() => {
+    fetch(`https://fake-api-tau.versel.app/api/eplay/jogos/${id}`)
+      .then((res) => res.json())
+      .then((res) => setGame(res))
+  }, [id])
+
+  if (!game) {
+    return <h3>Carregando...</h3>
+  }
 
   return (
     <>
       <Hero />
       <Section title="Sobre o jogo" background="black">
-        <p>
-          Hogwarts Legacy é um RPG de ação imersivo e de mundo aberto no mundo
-          introduzido pela primeira nos livros do Harry Potter. Embarque em uma
-          jornada por locais novos e familiares enquanto explora e descubra
-          animais fantásticos, personalize seus personagens e crie poções,
-          domine o lançamento de feitiços, aprimore talentos e torne-se o bruxo
-          que deseja ser. Experimente Hogwarts da década de 1800. Seu personagem
-          é um estudante com chave de um antigo segredo que ameaça destruir o
-          mundo bruxo. Faça aliados, lute contra bruxos das trevas e decida o
-          destino do mundo. Seu legado é o que você faz dele. Viva o insperado.
-        </p>
+        <p>{game.description}</p>
       </Section>
       <Section title="Mais detalhes" background="gray">
         <p>
-          <b>Plataforma:</b> PlayStation 5 <br />
-          <b>Desenvolvedor:</b> Avalanche Software <br />
-          <b>Editora:</b> Portkey Games, subsidiária da Warner Bros. Interative
-          Entertainment <br />
+          <b>Plataforma:</b> {game.details.system} <br />
+          <b>Desenvolvedor:</b> {game.details.developer} <br />
+          <b>Editora:</b> {game.details.publisher} <br />
           <b>Idiomas:</b> O jogo oferece suporte a diversos idiomas, incluindo
-          inglês, espanhol, francês, alemão, italiano, português, entre outros.
-          As opções de áudio e legendas podem ser ajustadas nas configurações do
-          jogo.
+          {game.details.languages.join(', ')}
         </p>
       </Section>
       <Gallery name="Jogo Teste" defaultCover={spiderman} />
